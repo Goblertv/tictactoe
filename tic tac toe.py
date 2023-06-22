@@ -7,7 +7,7 @@ class Board:
                                ['', '', ''],
                                ['', '', '']])
 
-    def add_to_board(self, x, y, shape):
+    def add_to_board(self, x, y, shape, is_human):
         is_ok = False
         while not is_ok:
             for i in range(len(self.board)):
@@ -16,7 +16,12 @@ class Board:
                         self.board[i, y] = shape
                         is_ok = True
                     else:
-                        print("this cell is full,please enter new points for an empty cell")
+                        if is_human:
+                            xy = input("this cell is full,please enter new points for an empty cell\n")
+                            x = int(xy.split()[0])
+                            y = int(xy.split()[1])
+                        else:
+                            pass
 
     def print_board(self):
         print(self.board)
@@ -100,7 +105,7 @@ class HumanPlayer(BasePlayer):
             next_move = input("please enter the next shape place by row, col (x y)\n")
             x = next_move.split()[0]
             y = next_move.split()[1]
-            return int(x),int(y)
+            return int(x), int(y)
         except IndexError:
             print("please enter two numbers, row and col without a ','\n "
                   "should look like(0 1)\n")
@@ -112,11 +117,6 @@ class AIPlayer(BasePlayer):
         self.b_shape = shape
         self.human_shape = human_shape
         super().__init__("Bot", self.b_shape, board)
-
-    def next_move(self):
-        c_board = self.board_func.board.copy()
-        i, j = self.check_if_gonna_win(c_board, self.b_shape, 0, self.human_shape, 0, {})
-        return i, j
 
 
 def exit_app():
@@ -146,8 +146,8 @@ def call_check_win(board, shape, name, player):
                         print("It's a draw, try next time")
 
 
-def add(x, y, shape, board):
-    board.add_to_board(x, y, shape)
+def add(x, y, shape, board, is_h):
+    board.add_to_board(x, y, shape, is_h)
     board.print_board()
 
 
@@ -180,23 +180,13 @@ def main_game():
 
     while True:
         h_x, h_y = player.player_next_move()
-        add(h_x, h_y, shape, board)
+        add(h_x, h_y, shape, board, True)
         if call_check_win(board.board, shape, name, player):
             exit_app()
-        b_x, b_y = bot.next_move()
-        add(b_x, b_y, b_shape, board)
+        b_x, b_y = bot.check_if_gonna_win(board.board, b_shape, 0, shape, 0, {})
+        add(b_x, b_y, b_shape, board, False)
         if call_check_win(board.board, shape, name, player):
             exit_app()
-
-
-def check():
-    board = np.array([['O', '', 'X'],
-                      ['X', '', 'X'],
-                      ['', 'O', 'O']])
-    shape = 'X'
-    call_ai = AIPlayer(shape, '0', board)
-    call_ai.next_move()
-    print(board)
 
 
 main_game()
