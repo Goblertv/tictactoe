@@ -7,7 +7,7 @@ class Board:
                                ['', '', ''],
                                ['', '', '']])
 
-    def add_to_board(self, x, y, shape, is_human):
+    def add_to_board(self, x, y, shape):
         is_ok = False
         while not is_ok:
             for i in range(len(self.board)):
@@ -16,12 +16,9 @@ class Board:
                         self.board[i, y] = shape
                         is_ok = True
                     else:
-                        if is_human:
-                            xy = input("this cell is full,please enter new points for an empty cell\n")
-                            x = int(xy.split()[0])
-                            y = int(xy.split()[1])
-                        else:
-                            pass
+                        xy = input("this cell is full,please enter new points for an empty cell\n")
+                        x = int(xy[0])
+                        y = int(xy[1])
 
     def print_board(self):
         print(self.board)

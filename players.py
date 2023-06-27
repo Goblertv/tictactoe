@@ -74,7 +74,6 @@ class HumanPlayer(BasePlayer):
         super().__init__(name, shape, board)
 
     def player_next_move(self):
-        self.board_func.print_board()
         try:
             next_move = input("please enter the next shape place by row, col (x y)\n")
             x = next_move.split()[0]
